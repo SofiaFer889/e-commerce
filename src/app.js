@@ -5,9 +5,12 @@ import products from "./routes/products.js"
 import carts from "./routes/carts.js"
 import views from './routes/views.js'
 import __dirname from './utils.js'
+import ProductManager from "./productManager.js"
 
 const app = express()
 const PORT = 8080
+
+const p = new ProductManager
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -25,9 +28,12 @@ const expressServer = app.listen(PORT,()=>{console.log(`aplicacion corriendo en 
 const socketServer = new Server(expressServer)
 
 socketServer.on('connection', socket=>{
-    console.log('conectado desde el front')
+    const products = p.getProducts()
+    socket.emit('products', products)
+
+    socket.on('agregarProducto', product=>{
+        const result = p.addProduct({...product})
+        if(result.product)
+        socket.emit('products', result.product)
+    })
 })
-
-
-{/*<script src="/socket.io/socket.io.js"></script>
-    <script src="/js/index.js"></script>*/}

@@ -2,7 +2,6 @@ import fs from 'fs'
 class ProductManager{
     #products
     #path
-    static idProduct = 0
 
     constructor(){
         this.#path = './src/data/products.json'
@@ -35,7 +34,7 @@ class ProductManager{
         }
     }
 
-    addProduct(title, description, price, thumbnails=[], code, stock, category, status = true) {
+    addProduct({title, description, price, thumbnails=[], code, stock, category, status = true}) {
 
         let result = 'ocurrio un error'
 
@@ -46,7 +45,6 @@ class ProductManager{
             if (codeRepeate)
                result `El codigo ${code} ya se registró`
             else {
-                ProductManager.idProduct = ProductManager.idProduct + 1
                 const id = this.#assignProduct()
                 const newProduct = {
                     id,
