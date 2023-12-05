@@ -1,37 +1,16 @@
 import { Router } from "express"
-import ProductManager from "../productManager.js"
+import { getProductById, getProducts, addProduct, deleteProduct, updateProduct } from "../controllers/products.js"
 
 const router = Router()
-router.get('/', (req, res)=> {
-    const {limit} = req.query
-    const p = new ProductManager()
-    return res.json({prod: p.getProducts(limit)})
-})
 
-router.get('/:pid', (req, res)=>{
-    const {pid} = req.params
-    const p = new ProductManager()
-    return res.json({product:p.getProductsByID(Number(pid))})
-})
+router.get('/', getProducts)
 
-router.post('/',(req, res)=>{
-    const p = new ProductManager()
-    const result = p.addProduct({...req.body})
-    return res.json({result})
-})
+router.get('/:pid', getProductById)
 
-router.put('/', (req, res)=>{
-    const {pid} = req.params
-    const p = new ProductManager()
-    const result = p.updateProduct(Number(pid), res.body)
-    return res.json({result})
-})
+router.post('/', addProduct)
 
-router.delete('/', (req, res)=>{
-    const {pid} = req.params
-    const p = new ProductManager()
-    const result = p.deleteProduct(Number(pid))
-    return res.json({result})
-})
+router.put('/', updateProduct)
+
+router.delete('/', deleteProduct)
 
 export default router

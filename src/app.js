@@ -1,14 +1,17 @@
 import express from "express"
 import { Server } from "socket.io"
 import {engine} from "express-handlebars"
+import 'dotenv/config'
 import products from "./routes/products.js"
 import carts from "./routes/carts.js"
 import views from './routes/views.js'
 import __dirname from './utils.js'
-import ProductManager from "./productManager.js"
+import productModel from "./dao/models/productsModel.js"
+import { dbConnection } from "./database/config.js"
+import {messageModel} from './dao/models/messagesModel.js'
 
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT
 
 const p = new ProductManager
 
@@ -24,16 +27,33 @@ app.use('/', views)
 app.use('/api/products', products)
 app.use('/api/carts', carts)
 
-const expressServer = app.listen(PORT,()=>{console.log(`aplicacion corriendo en el puerto ${PORT}`)})
-const socketServer = new Server(expressServer)
+await dbConnection()
 
-socketServer.on('connection', socket=>{
-    const products = p.getProducts()
+const expressServer = app.listen(PORT,()=>{console.log(`aplicacion corriendo en el puerto ${PORT}`)})
+const io = new Server(expressServer)
+
+io.on('connection', async (socket)=>{
+    const products = await productModel.find()
     socket.emit('products', products)
 
-    socket.on('agregarProducto', product=>{
-        const result = p.addProduct({...product})
-        if(result.product)
+    socket.on('agregarProducto', async (product)=>{
+        const newProduct = await productModel.create({...product})
+        if(newProduct)
+        products.push(newProduct)
         socket.emit('products', result.product)
     })
+
+    const messages = await messageModel.find()
+    socket.emit('message', messages)
+
+    socket.on('message', async(data)=> {
+        const newMessage = await messageModel.create({...data})
+        if(newMessage){
+            const messages = await messageModel.find()
+            io.emit('messageLog', messages)
+        }
+    })
+
+    socket.broadcast.emit('nuevo_user')
+
 })
