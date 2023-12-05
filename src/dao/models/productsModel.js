@@ -1,13 +1,13 @@
-import { Schema } from "mongoose"
+import { Schema, model } from "mongoose"
 
 const nameCollection = 'product'
 
 const productSchema = new Schema({
     title: String,
     description: String,
-    code: {String, unique: true},
+    code: String,
     price: Number,
-    status: {Boolean, default: true},
+    status: Boolean,
     stock: Number,
     category: String,
     thumbnails: [String],
@@ -20,4 +20,4 @@ productSchema.set('toJSON', {
     }
 })
     
-export default ProductModel = model(nameCollection, productSchema)
+export const productModel = model(nameCollection, productSchema)

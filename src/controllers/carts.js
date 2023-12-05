@@ -1,10 +1,10 @@
-import { Request, response } from "express"
-import cartsModel from "../dao/models/cartsModel.js"
+import { request, response } from "express"
+import {cartModel} from "../dao/models/cartsModel.js"
 
 export const getCartById = async(req=request, res=response) => {
     try {
         const {cid} = req.params
-        const cart = await cartsModel.findById(cid)
+        const cart = await cartModel.findById(cid)
         if(cart)
            return res.json({cart})
         return res.status(404).json({msg: `el carrito con id ${cid} no existe`})
@@ -16,7 +16,7 @@ export const getCartById = async(req=request, res=response) => {
 
 export const createCart = async(req=request, res=response) => {
     try {
-        const cart = await cartsModel.create({})
+        const cart = await cartModel.create({})
         return res.json({msg: 'carrito creado', cart})
     } catch (error) {
         console.log('createCart ->', error)
@@ -27,7 +27,7 @@ export const createCart = async(req=request, res=response) => {
 export const addProductInCart = async(req=request, res=response) => {
     try {
         const {cid, pid} =  req.params
-        const cart = await cartsModel.findById(cid)
+        const cart = await cartModel.findById(cid)
         if(!cart)
             return res.status(404).json({msg:`el carrito conid ${cid} no existe`})
         const productInCart = cart.products.find(p=>p.id.toString() === pid)

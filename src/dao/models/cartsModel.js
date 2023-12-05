@@ -1,4 +1,4 @@
-import { Schema } from "mongoose"
+import { Schema, model } from "mongoose"
 
 const nameCollection = 'cart'
 
@@ -25,4 +25,4 @@ cartSchema.set('toJSON', {
     }
 })
     
-export default cartModel = model(nameCollection, cartSchema)
+export const cartModel = model(nameCollection, cartSchema)

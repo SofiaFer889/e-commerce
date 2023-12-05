@@ -1,4 +1,4 @@
-import { Schema } from "mongoose"
+import { Schema, model } from "mongoose"
 
 const nameCollection = 'message'
 
@@ -7,4 +7,4 @@ const messageSchema = new Schema({
     message:{type:String, require:[true, 'el mensaje es obligatorio']}
 })
     
-export default messageModel = model(nameCollection, messageSchema)
+export const messageModel = model(nameCollection, messageSchema)

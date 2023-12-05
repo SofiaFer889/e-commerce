@@ -6,14 +6,12 @@ import products from "./routes/products.js"
 import carts from "./routes/carts.js"
 import views from './routes/views.js'
 import __dirname from './utils.js'
-import productModel from "./dao/models/productsModel.js"
+import {productModel} from "./dao/models/productsModel.js"
 import { dbConnection } from "./database/config.js"
 import {messageModel} from './dao/models/messagesModel.js'
 
 const app = express()
 const PORT = process.env.PORT
-
-const p = new ProductManager
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

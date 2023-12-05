@@ -1,11 +1,10 @@
 import {request, response} from 'express'
-import {producModel} from '../models/products.js'
+import {productModel} from '../dao/models/productsModel.js'
 
 export const getProducts = async(req=request, res=response) =>{
     try {
         const {limit} = req.query
-        
-        const [products, total] = await Promise.all([producModel.find().limit(Number(limit)),producModel.countDocuments])
+        const [products, total] = await Promise.all([productModel.find().limit(Number(limit)),productModel.countDocuments])
         return res.json({total, products})
     } catch (error) {
         console.log('getProducts ->', error)
@@ -16,7 +15,7 @@ export const getProducts = async(req=request, res=response) =>{
 export const getProductById = async(req=request, res=response) =>{
     try {
         const {pid} = req.params
-        const product = await producModel.findById(pid)
+        const product = await productModel.findById(pid)
         if(!product)
            return res.status(404).json({msg:`el producto con id ${pid} no existe`})
         return res.json({product})
@@ -33,7 +32,7 @@ export const addProduct = async(req=request, res=response) =>{
         if(!title, !description, !price, !code, !stock, !category)
            return res.status(404).json({msg:`los campos [title, description, price, code, stock, category] son obligatorios`})
         
-        const product = await producModel.create({title, description, price, thumbnails, code, stock, category, status})
+        const product = await productModel.create({title, description, price, thumbnails, code, stock, category, status})
 
         return res.json({product})
     } catch (error) {
@@ -45,8 +44,8 @@ export const addProduct = async(req=request, res=response) =>{
 export const updateProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
-       const {_id, ...res} = req.body
-       const product = await producModel.findByIdAndUpdate(pid, {...rest}, {new: true})
+       const {_id, ...rest} = req.body
+       const product = await productModel.findByIdAndUpdate(pid, {...rest}, {new: true})
        if(product)
           return res.json({msg:'producto actualizado', product})
         return res.status(404).json({msg: `no se pudo actualizar el producto con id ${pid}`})
@@ -59,7 +58,7 @@ export const updateProduct = async(req=request, res=response) =>{
 export const deleteProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
-       const product = await producModel.findByIdAndDelete(pid)
+       const product = await productModel.findByIdAndDelete(pid)
        if(product)
           return res.json({msg:'producto elimminido', product})
         return res.status(404).json({msg: `no se pudo eliminar el producto con id ${pid}`})
