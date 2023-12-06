@@ -6,9 +6,9 @@ import products from "./routes/products.js"
 import carts from "./routes/carts.js"
 import views from './routes/views.js'
 import __dirname from './utils.js'
-import {productModel} from "./dao/models/productsModel.js"
 import { dbConnection } from "./database/config.js"
 import {messageModel} from './dao/models/messagesModel.js'
+import { addProductService, getProductsService, } from "./service/products.js"
 
 const app = express()
 const PORT = process.env.PORT
@@ -31,14 +31,16 @@ const expressServer = app.listen(PORT,()=>{console.log(`aplicacion corriendo en 
 const io = new Server(expressServer)
 
 io.on('connection', async (socket)=>{
-    const products = await productModel.find()
-    socket.emit('products', products)
+    const {payload} = await getProductsService({})
+    const products = payload
+
+    socket.emit('products', payload)
 
     socket.on('agregarProducto', async (product)=>{
-        const newProduct = await productModel.create({...product})
+        const newProduct = await addProductService({...product})
         if(newProduct)
         products.push(newProduct)
-        socket.emit('products', result.product)
+        socket.emit('products', products)
     })
 
     const messages = await messageModel.find()
