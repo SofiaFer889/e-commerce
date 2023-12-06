@@ -1,5 +1,5 @@
 <header>
-    <div class="header-container">
+    <div>
         <h1>{{title}}</h1>
         <nav>
             {{#if user}}
@@ -8,6 +8,7 @@
             {{else}}
             <a href="/login">iniciar sesion</a>
             <a href="/register">registrarse</a>
+            {{/if}}
         </nav>
     </div>
 </header>
