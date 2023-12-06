@@ -1,0 +1,68 @@
+<div>
+    <h3>lista de productos</h3>
+    <table>
+        <head>
+            <tr>
+                <th>titulo</th>
+                <th>precio</th>
+                <th>imag</th>
+            </tr>
+        </head>
+        <tbody>
+            {{#each result.payload}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.price}}</td>
+                <td>
+                    {{#if this.thumbnails.length}}
+                        <a href="{{this.thmbnails.[0]}}" target="_blank">{{this.thmbnails.[0]}}</a>
+                    {{else}}
+                        no hay imagen
+                    {{/if}}
+                </td>
+                <td>
+                    <button class="cart-button" onclick="addToCart('{{this._id}}')">
+                        <i class="fas fa-shopping-cart cart-icon"></i>
+                    </button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span>limite por pagina: {{result.limit}}</span><br>
+        {{#if result.query}}
+        <span>filrado por: {{result.query}}</span>
+        {{/if}}
+
+        {{#if result.hasPrevPage}}
+        <a href="?page={{result.prevPage}}&limit{{result.limit}}{{#if result.query}}&query={{result.query}}{{/if}}">Aterior</a>
+        {{/if}}
+
+        <span>pagina {{result.page}} de {{result.totalPages}}</span>
+
+        {{#if result.hasNextPage}}
+        <a href="?page={{result.nextPage}}&limit{{result.limit}}{{#if result.query}}&query={{result.query}}{{/if}}">Siguiente</a>
+        {{/if}}
+    </div>
+
+    <script>
+        function addToCart(productId){
+            const idCart = '656fdd04e60d59c981b46ba6'
+            fetch(`/api/carts/${idCart}/prduct/${productId}`, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                console.log(data)
+            })
+            .catch(error => {
+                console.log('Error :', error)
+            })
+        }
+    </script>
+</div>
