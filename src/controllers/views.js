@@ -1,7 +1,6 @@
 import { request, response } from "express"
 import { getProductsService } from "../service/products.js"
 import {getCartByIdService} from '../service/carts.js'
-import {getUserEmail, registerUser} from '../service/user.js'
 
 export const homeView = async(req = request, res = response)=>{
     const limit= 50
@@ -35,43 +34,40 @@ export const cartIdView = async(req = request, res = response)=>{
 }
 
 export const loginGetView = async(req = request, res = response)=>{
+
+    if (req.session.user)
+        return res.redirect('/')
+
     return res.render('login', {styles: 'login.css', title:'login'})
 }
 
-export const loginPostView = async(req = request, res = response)=>{
-    const{email, password} = req.body
-    
-    const user = await getUserEmail({email})
+export const loginView = async(req = request, res = response)=>{
+    if(!req.user)
+      return res.redirect('/login')
 
-    if(user && user.password === password){
-        const userName= `${user.name} ${user.lastName}`
-        req.session.user = userName
-        req.session.rol = user.rol
-        return res.redirect('/')
+    req.session.user = {
+        name: req.user.name,
+        lastName: req.user.lastName,
+        email: req.user.email,
+        rol: req.user.rol,
+        image: req.user.image
     }
 
-    return res.redirect('/login')
+    return res.redirect('/')
 }
 
 export const registerGetView = async(req = request, res = response)=>{
+    if (req.session.user)
+        return res.redirect('/')
+    
     return res.render('register', {styles: 'login.css', title:'register'})
 }
 
 export const registerPostView = async(req = request, res = response)=>{
-    const{password, confirmPassword} = req.body
-    if(password !== confirmPassword)
+    if(!req.user)
        return res.redirect('/register')
-    
-    const user = await registerUser({...req.body})
 
-    if(user){
-        const userName= `${user.name} ${user.lastName}`
-        req.session.user = userName
-        req.session.rol = user.rol
-        return res.redirect('/')
-    }
-
-    return res.redirect('/register')
+    return res.redirect('/login')
 }
 
 export const logoutView = (req=request, res=response)=> {

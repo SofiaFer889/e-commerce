@@ -1,5 +1,14 @@
 import {userModel} from '../dao/models/usersModel.js'
 
+export const getUserByID = async (id) =>{
+    try {
+        return await userModel.findById(id)
+    } catch (error) {
+        console.log('getUserByID ->', error)
+        throw error
+    }
+}
+
 export const getUserEmail = async (email) =>{
     try {
         return await userModel.findOne({email})

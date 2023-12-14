@@ -4,12 +4,14 @@ const nameCollection = 'User'
 
 const UserSchema = new Schema({
     name: {type: String, require:[true]},
-    lastName: {type: String, require:[true]},
+    lastName: {type: String},
     email: {type: String, require:[true], unique:true},
     password: {type: String, require:[true]},
     rol: {type: String, default: 'user', enum:['user', 'admin']},
     status: {type: Boolean, default:true},
     fechaCreacion: {type: Date, default:Date.now},
+    image: {type: String},
+    github: {type: Boolean,default:false},
 })
 
 UserSchema.set('toJSON', {
