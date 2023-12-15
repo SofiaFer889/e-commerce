@@ -1,4 +1,4 @@
-import passport, { use } from "passport"
+import passport from "passport"
 import local from "passport-local"
 import GitHubStrategy from 'passport-github2'
 import { getUserByID, getUserEmail, registerUser } from "../service/user.js"
@@ -12,9 +12,9 @@ export const initializaPassport = () => {
         {passReqToCallback: true, usernameField:'email'}, 
         async (req, username, password, done) => { 
             try {
-                const {confirmPassword} = req.body
+                const {comfirmPassword} = req.body
 
-                if(password !== confirmPassword){
+                if(password !== comfirmPassword){
                     console.log('las cotraseñas no son iguales')
                     return done(null, false)
                 }

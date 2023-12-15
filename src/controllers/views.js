@@ -35,10 +35,10 @@ export const cartIdView = async(req = request, res = response)=>{
 
 export const loginGetView = async(req = request, res = response)=>{
 
-    if (req.session.user)
+    if (!req.session.user)
         return res.redirect('/')
 
-    return res.render('login', {styles: 'login.css', title:'login'})
+    return res.render('login', {styles: 'login.css', title:'Login'})
 }
 
 export const loginView = async(req = request, res = response)=>{
@@ -57,10 +57,10 @@ export const loginView = async(req = request, res = response)=>{
 }
 
 export const registerGetView = async(req = request, res = response)=>{
-    if (req.session.user)
+    if (!req.session.user)
         return res.redirect('/')
     
-    return res.render('register', {styles: 'login.css', title:'register'})
+    return res.render('register', {styles: 'login.css', title:'Registro'})
 }
 
 export const registerPostView = async(req = request, res = response)=>{
