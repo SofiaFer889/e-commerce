@@ -1,7 +1,8 @@
 import { request, response } from "express"
-import { getProductsService } from "../service/products.js"
+import { addProductService, getProductByCodeService, getProductsService } from "../service/products.js"
 import {getCartByIdService} from '../service/carts.js'
-
+import { cloudinary } from "../config/cloudinary.js"
+import { validFileExtension } from "../utils/validFileExtension.js"
 export const homeView = async(req = request, res = response)=>{
     const limit= 50
     const {payload} = await getProductsService({limit})
@@ -24,6 +25,36 @@ export const productsView = async(req = request, res = response)=>{
     const user = req.session.user
     const result = await getProductsService(...req.query)
     return res.render('products', {title:'productos', result, styles:'products.css', user})
+}
+
+export const addProductView = async(req = request, res = response)=>{
+    const user = await getProductsService(...req.query)
+    return res.render('addProduct', {title:'addProduct', user})
+}
+
+export const addProductPostView = async(req = request, res = response)=>{
+    const {title, description, price, code, stock, category} = req.body
+
+    if(!title, !description, !price, !code, !stock, !category)
+        return res.status(404).json({msg:`los campos [title, description, price, code, stock, category] son obligatorios`})
+        
+    const existeCode = await getProductByCodeService(code)
+
+    if(existeCode)
+        return res.status(400).json({msj: 'el odigo ingresado  ya existe'})
+
+    if(req.file){
+        const isValidExtension = validFileExtension(req.file.originalname)
+            if(!isValidExtension)
+              return res.status(404).json({msg:'la extension no es valida'})
+
+        const {secure_url} = await cloudinary.uploader.upload(req.file.path)
+        req.body.thumbnails = secure_url
+    }
+
+    await addProductService({...req.body})
+
+    return res.redirect('/products')
 }
 
 export const cartIdView = async(req = request, res = response)=>{

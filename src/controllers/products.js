@@ -1,5 +1,7 @@
 import {request, response} from 'express'
-import { getProductsService, getProductByIdService, addProductService, updateProductService, deleteProductService } from '../service/products.js'
+import { getProductsService, getProductByIdService, addProductService, updateProductService, deleteProductService, getProductByCodeService } from '../service/products.js'
+import {cloudinary} from '../config/cloudinary.js'
+import { validFileExtension } from '../utils/validFileExtension.js'
 
 export const getProducts = async(req=request, res=response) =>{
     try {
@@ -33,6 +35,20 @@ export const addProduct = async(req=request, res=response) =>{
         if(!title, !description, !price, !code, !stock, !category)
            return res.status(404).json({msg:`los campos [title, description, price, code, stock, category] son obligatorios`})
         
+        const existeCode = await getProductByCodeService(code)
+
+        if(existeCode)
+           return res.status(400).json({msj: 'el odigo ingresado  ya existe'})
+
+        if(req.file){
+            const isValidExtension = validFileExtension(req.file.originalname)
+            if(!isValidExtension)
+              return res.status(404).json({msg:'la extension no es valida'})
+
+            const {secure_url} = await cloudinary.uploader.upload(req.file.path)
+            req.body.thumbnails = secure_url
+        }
+
         const product = await addProductService({...req.body})
 
         return res.json({product})
@@ -45,7 +61,27 @@ export const updateProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
        const {_id, ...rest} = req.body
-       const product = await updateProductService(pid, rest)
+       const producto = await getProductByIdService(pid)
+       if(!producto)
+           return res.status(400).json({msj: `el producto $(pid)no existe`})
+
+        if(req.file) {
+            const isValidExtension = validFileExtension(req.file.originalname)
+            if(!isValidExtension)
+              return res.status(404).json({msg:'la extension no es valida'})
+
+            if(product.thumbnails) {
+                const url = product.thumbnails.split('/')
+                const nombre = url[url.length - 1]
+                const [id] = nombre.split('.')
+                cloudinary.uploader.destroy(id)
+            }
+            const {secure_url} = await cloudinary.uploader.upload(req.file.path)
+            rest.thumbnails = secure_url
+        }
+
+        const product = await updateProductService(pid,rest)
+
        if(product)
           return res.json({msg:'producto actualizado', product})
         return res.status(404).json({msg: `no se pudo actualizar el producto con id ${pid}`})

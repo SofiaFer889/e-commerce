@@ -10,7 +10,7 @@ const productSchema = new Schema({
     status: Boolean,
     stock: Number,
     category: String,
-    thumbnails: [String],
+    thumbnails: String,
 })
 
 productSchema.set('toJSON', {

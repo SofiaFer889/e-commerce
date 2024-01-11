@@ -2,6 +2,7 @@
 
 <div>
     <h3>lista de productos</h3>
+    <a href="/add-product" class="btn btn-primary">agregar producto</a>
     <table>
         <head>
             <tr>
@@ -16,8 +17,8 @@
                 <td>{{this.title}}</td>
                 <td>{{this.price}}</td>
                 <td>
-                    {{#if this.thumbnails.length}}
-                        <a href="{{this.thmbnails.[0]}}" target="_blank">{{this.thmbnails.[0]}}</a>
+                    {{#if this.thumbnails}}
+                    <img src="{{this.thmbnails}}" alt="" width="50">
                     {{else}}
                         no hay imagen
                     {{/if}}

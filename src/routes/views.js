@@ -1,14 +1,16 @@
 import { Router } from "express"
-import { homeView, realTimeProductsView, chatView, productsView, cartIdView, loginGetView, registerGetView, registerPostView, logoutView, loginView,} from '../controllers/views.js'
+import { homeView, realTimeProductsView, chatView, productsView, cartIdView, loginGetView, registerGetView, registerPostView, logoutView, loginView, addProductView, addProductPostView} from '../controllers/views.js'
 import { auth, admin } from "../middlewere/auth.js"
 import passport from "passport"
-
+import { uploader } from "../config/multer.js"
 const router = Router()
 
 router.get('/', homeView)
 router.get('/realtimeproducts', [auth, admin], realTimeProductsView)
 router.get('/chat',auth, chatView)
 router.get('/products', auth, productsView)
+router.get('/add-product', auth, addProductView)
+router.post('/add-product', [auth, uploader.single('file')], addProductPostView)
 router.get('/cart/:cid', auth, cartIdView)
 router.get('/login', loginGetView)
 router.get('/register', registerGetView)
