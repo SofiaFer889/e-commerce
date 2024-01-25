@@ -10,8 +10,8 @@ import carts from "./routes/carts.js"
 import views from './routes/views.js'
 import __dirname from './utils.js'
 import { dbConnection } from "./database/config.js"
-import {messageModel} from './dao/models/messagesModel.js'
-import { addProductService, getProductsService, } from "./service/products.js"
+import {messageModel} from './dao/mongo/models/messagesModel.js'
+import { ProductsRepository } from "./repositories/index.js"
 import { initializaPassport } from "./config/passport.js"
 
 const app = express()
@@ -50,13 +50,13 @@ const io = new Server(expressServer)
 
 io.on('connection', async (socket)=>{
     const limit = 50
-    const {payload} = await getProductsService({limit})
+    const {payload} = await ProductsRepository.getProducts({limit})
     const products = payload
 
     socket.emit('products', payload)
 
     socket.on('agregarProducto', async (product)=>{
-        const newProduct = await addProductService({...product})
+        const newProduct = await ProductsRepository.addProduct({...product})
         if(newProduct)
         products.push(newProduct)
         socket.emit('products', products)

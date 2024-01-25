@@ -1,12 +1,12 @@
 import {request, response} from 'express'
-import { getProductsService, getProductByIdService, addProductService, updateProductService, deleteProductService, getProductByCodeService } from '../service/products.js'
+import {ProductsRepository} from '../repositories/index.js'
 import {cloudinary} from '../config/cloudinary.js'
 import { validFileExtension } from '../utils/validFileExtension.js'
 
 export const getProducts = async(req=request, res=response) =>{
     try {
 
-        const result = await getProductsService({...req.query})
+        const result = await ProductsRepository.getProducts({...req.query})
 
         return res.json({result})
         
@@ -18,7 +18,7 @@ export const getProducts = async(req=request, res=response) =>{
 export const getProductById = async(req=request, res=response) =>{
     try {
         const {pid} = req.params
-        const product = await getProductByIdService(pid)
+        const product = await ProductsRepository.getProductById(pid)
         if(!product)
            return res.status(404).json({msg:`el producto con id ${pid} no existe`})
         return res.json({product})
@@ -35,7 +35,7 @@ export const addProduct = async(req=request, res=response) =>{
         if(!title, !description, !price, !code, !stock, !category)
            return res.status(404).json({msg:`los campos [title, description, price, code, stock, category] son obligatorios`})
         
-        const existeCode = await getProductByCodeService(code)
+        const existeCode = await ProductsRepository.getProductByCode(code)
 
         if(existeCode)
            return res.status(400).json({msj: 'el odigo ingresado  ya existe'})
@@ -49,7 +49,7 @@ export const addProduct = async(req=request, res=response) =>{
             req.body.thumbnails = secure_url
         }
 
-        const product = await addProductService({...req.body})
+        const product = await ProductsRepository.addProduct({...req.body})
 
         return res.json({product})
     } catch (error) {
@@ -61,7 +61,7 @@ export const updateProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
        const {_id, ...rest} = req.body
-       const producto = await getProductByIdService(pid)
+       const producto = await ProductsRepository.getProductById(pid)
        if(!producto)
            return res.status(400).json({msj: `el producto $(pid)no existe`})
 
@@ -80,7 +80,7 @@ export const updateProduct = async(req=request, res=response) =>{
             rest.thumbnails = secure_url
         }
 
-        const product = await updateProductService(pid,rest)
+        const product = await ProductsRepository.updateProduct(pid,rest)
 
        if(product)
           return res.json({msg:'producto actualizado', product})
@@ -93,7 +93,7 @@ export const updateProduct = async(req=request, res=response) =>{
 export const deleteProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
-       const product = await deleteProductService(pid)
+       const product = await ProductsRepository.deleteProduct(pid)
        if(product)
           return res.json({msg:'producto elimminido', product})
         return res.status(404).json({msg: `no se pudo eliminar el producto con id ${pid}`})
