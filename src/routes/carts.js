@@ -1,17 +1,18 @@
 import { Router } from "express"
 import {getCartById, createCart, addProductInCart, deleteProductsInCart, updateProductsInCart, deleteCart} from '../controllers/carts.js'
+import { validarJWT } from "../middlewere/auth.js"
 
 const router = Router()
 
-router.get('/:cid',getCartById)
+router.get('/:cid', validarJWT,getCartById)
 
-router.post('/',createCart)
+router.post('/', validarJWT,createCart)
 
-router.post('/:cid/product/:pid', addProductInCart)
+router.post('/:cid/product/:pid', validarJWT,addProductInCart)
 
-router.delete('/:cid/products/:pid', deleteProductsInCart)
+router.delete('/:cid/products/:pid', validarJWT, deleteProductsInCart)
 
-router.put('/:cid/products/:pid', updateProductsInCart)
+router.put('/:cid/products/:pid', validarJWT, updateProductsInCart)
 
-router.delete('/:cid', deleteCart)
+router.delete('/:cid', validarJWT, deleteCart)
 export {router as cartsRouter}
