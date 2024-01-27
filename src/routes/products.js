@@ -13,4 +13,4 @@ router.put('/',uploader.single('file'), updateProduct)
 
 router.delete('/', deleteProduct)
 
-export default router
+export {router as productsRouter}

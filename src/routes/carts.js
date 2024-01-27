@@ -14,4 +14,4 @@ router.delete('/:cid/products/:pid', deleteProductsInCart)
 router.put('/:cid/products/:pid', updateProductsInCart)
 
 router.delete('/:cid', deleteCart)
-export default router
+export {router as cartsRouter}
