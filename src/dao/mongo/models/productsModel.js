@@ -3,14 +3,14 @@ import { Schema, model } from "mongoose"
 const nameCollection = 'product'
 
 const productSchema = new Schema({
-    title: String,
-    description: String,
-    code: String,
-    price: Number,
-    status: Boolean,
-    stock: Number,
-    category: String,
-    thumbnails: String,
+    title: {type: String, required:[true,'el campo es obligatorio']},
+    description: {type: String, required:[true,'el campo es obligatorio']},
+    code: {type: String, required:[true,'el campo es obligatorio'], unique:true},
+    price: {type: Number, required:[true,'el campo es obligatorio']},
+    status: {type:Boolean, default:true},
+    stock: {type: Number, required:[true,'el campo es obligatorio']},
+    category: {type: String, required:[true,'el campo es obligatorio']},
+    thumbnails: {type: String},
 })
 
 productSchema.set('toJSON', {
