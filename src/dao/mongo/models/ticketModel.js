@@ -7,7 +7,7 @@ const TicketSchema = new Schema({
     purchase_datetiime: {type: Date, default:Date.now},
     amount: {type: Number,require:[true]},
     purchase: {type:String, require:[true]},
-    items: {type: Object, required: [true]}
+    items: [{type: Object, required: [true]}],
 })
 
 TicketSchema.set('toJSON', {

@@ -31,3 +31,5 @@ export const updateProductsInCart = async (cid, pid, quantity) =>
     )
 
 export const deleteCart = async (cid) => await cartModel.findByIdAndDelete(cid)
+
+export const deleteAllProductsInCart = async() => await cartModel.findByIdAndUpdate(cid, {$set:{'products':[]}},{new:true})

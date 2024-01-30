@@ -11,3 +11,5 @@ export const deleteProductsInCart = async (cid, pid) => await CartDao.deleteProd
 export const updateProductsInCart = async (cid, pid, quantity) => await CartDao.updateProductsInCart(cid, pid, quantity)
 
 export const deleteCart = async (cid) => await CartDao.deleteCart(cid)
+
+export const deleteAllProductsInCart = async() => await CartDao.deleteAllProductsInCart(cid)

@@ -16,7 +16,9 @@ export const getProducts = async ({ limit = 2, page = 1, sort, query }) => {
         console.log('error al parsear')
         query = {}
     }
-    const queryProducts = (await productModel.find(query).limit(limit).skip(skip).lean())
+
+    query= {...query, status:true}
+    const queryProducts = productModel.find(query).limit(limit).skip(skip)
     if (sort !== null)
         queryProducts.sort({ price: sort })
     const [products, totalDocs] = await Promise.all([queryProducts, productModel.countDocuments(query)])
