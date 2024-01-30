@@ -1,5 +1,6 @@
 import { request, response } from "express"
-import { CartsRepository, ProductsRepository, UsersRepository } from "../repositories/index.js"
+import { CartsRepository, ProductsRepository, TicketRepository, UsersRepository } from "../repositories/index.js"
+import { v4 as uuidv4 } from "uuid"
 
 export const getCartById = async(req=request, res=response) => {
     try {
@@ -113,3 +114,40 @@ export const updateProductsInCart= async (req = request, res = response)=>{
     }
 }
 */
+
+export const finalizarCompra = async()=> {
+    try {
+        const{_id}=req
+        const {cid} =req.params
+
+        const usuario = await UsersRepository.getUserByID(_id)
+        if(!(usuario.cart_id.toString()===cid)) return res.status(400).json({ok:false,msg:'carrito no valido'})
+
+        const carrito = await CartsRepository.getCartById(cid)
+        if(!(carrito.products.length > 0)) return res.status(404).json({ok:false, msg:'no se puede finalizar la compra, carrito vacio', carrito})
+
+        const productoStockValid = carrito.products.filter(p => p.id.stock >= p.quantity)
+
+        const actualizacionesQuantity = productoStockValid.map(p => 
+            ProductsRepository.updateProduct(p.id._id, {stock: p.id.stock - p.quantity})  )
+        await Promise.all(actualizacionesQuantity)
+
+        const items = productoStockValid.map(i=>({
+            title:i.id.title,
+            price:i.id.price,
+            quantity:i.quantity,
+            total:i.id.price*i.quantity
+        }))
+
+        let amount=0
+        items.forEach(element => {amount = amount + element.total})
+        const purchase = usuario.email
+        const code = uuidv4()
+        await TicketRepository.createTicket({items, amount, purchase, code})
+
+        return res.json({ok:true, msg:'compra generada', ticket:{items, amount, code, cliente:purchase}})
+    } catch (error) {
+        console.log(err)
+        return res.status(500).json({msg: 'hablar con el admin'})
+    }
+}

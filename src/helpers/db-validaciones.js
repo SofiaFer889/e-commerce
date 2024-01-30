@@ -1,4 +1,4 @@
-import { ProductsRepository, UsersRepository } from "../repositories/index.js"
+import { CartsRepository, ProductsRepository, UsersRepository } from "../repositories/index.js"
 
 export const existeEmail = async(email) => {
     
@@ -17,6 +17,13 @@ export const existeCode = async(code) => {
 export const existeProduct = async(idProduct) => {
     
   const productExiste = await ProductsRepository.getProductByCode(idProduct)
-  if(productExiste)
+  if(!productExiste)
     throw new Error(`el id ${idProduct}ya existe`)
+}
+
+export const existeCart = async(idCart) => {
+    
+  const cartExiste = await CartsRepository.getCartById(idCart)
+  if(!cartExiste)
+    throw new Error(`el id ${idCart} no existe`)
 }
