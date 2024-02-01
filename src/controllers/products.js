@@ -94,3 +94,14 @@ export const deleteProduct = async(req=request, res=response) =>{
         return res.status(500).json({msg:'hablar con un administrador'})
     }
 }
+
+export const mockingProducts = async(req = request, res=response) => {
+    try {
+        const mockedProducts = Array.from({length: 100}, (_, index) =>({
+            _id: `mockedProduct${index + 1}`,
+        }))
+        return res.json({mockedProducts})
+    } catch (error) {
+        return res.status(500).json({msg:'hablar con un administrador'})
+    }
+}

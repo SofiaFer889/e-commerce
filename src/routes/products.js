@@ -1,12 +1,12 @@
 import { Router } from "express"
-import { getProductById, getProducts, addProduct, deleteProduct, updateProduct } from "../controllers/products.js"
+import { mockingProducts, getProductById, getProducts, addProduct, deleteProduct, updateProduct } from "../controllers/products.js"
 import { uploader } from "../config/multer.js"
 import { isAdmin, validarCampos, validarJWT } from "../middlewere/auth.js"
 import { check } from "express-validator"
 import { existeCode, existeProduct } from "../helpers/db-validaciones.js"
 
 const router = Router()
-
+router.get('mockingproducts', mockingProducts)
 router.get('/', validarJWT, getProducts)
 
 router.get('/:pid', [

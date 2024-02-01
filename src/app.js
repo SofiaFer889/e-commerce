@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { cartsRouter, productsRouter, authRouter} from './routes/index.js'
 import __dirname from './utils.js'
 import { dbConnection } from "./database/config.js"
+import errorHandler from "./utils/errorHandler.js"
 
 const app = express()
 const PORT = process.env.PORT
@@ -16,5 +17,7 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 
 await dbConnection()
+
+app.use(errorHandler)
 
 app.listen(PORT,()=>{console.log(`aplicacion corriendo en el puerto ${PORT}`)})
