@@ -1,0 +1,152 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Pizzeria</title>
+</head>
+<body>
+    <header>Docs Api Pizzaria</header>
+    <main>
+        <details>
+            <summary>AUTH</summary>
+            <div class="endpoint">
+                <h2>/api/auth/login</h2>
+                <p>endpoint para inicio de sesion</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>email (String)<span class="required">requerido</span>El mail es requerido</li>
+                    <li>password<span class="required">requerido</span>la contraseña es requerida (con un minimo de 6 caracteres)</li>
+                </ul>
+            </div>
+    
+            <div class="endpoint">
+                <h2>/api/auth/register (POST)</h2>
+                <p>endpoint para registrar un nuevo user</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>name (String) <span class="required">requerido</span> nombre del usuario</li>
+                    <li>email (String)<span class="required">requerido</span>El mail es requerido</li>
+                    <li>password<span class="required">requerido</span>la contraseña es requerida (con un minimo de 6 caracteres)</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>PRODUCTS</summary>
+            <div class="endpoint">
+                <h2>/api/auth/products (GET)</h2>
+                <p>endpoint para obtener productos paginados</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>limit (number): limite de elementos a obtener</li>
+                    <li>page (number): numero de pagina</li>
+                    <li>sort (String): tipo de orden </li>
+                    <li>query (number): query personalizada de busqueda</li>
+                </ul>
+            </div>
+    
+            <div class="endpoint">
+                <h2>/api/auth/:pid (GET)</h2>
+                <p>endpoint para obtener un product por id</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>pid (String) <span class="required">requerido</span> Mongo ID valido</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/products (POST)</h2>
+                <p>endpoint para crear un nuevo product</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>title (String) <span class="required">requerido</span>titulo del producto </li>
+                    <li>description(String) <span class="required">requerido</span> descripcion del producto</li>
+                    <li>code(String) <span class="required">requerido</span>codigo unico del producto </li>
+                    <li>price(number) <span class="required">requerido</span> precio del productp</li>
+                    <li>stock(number) <span class="required">requerido</span> stock del producto</li>
+                    <li>category(String) <span class="required">requerido</span>categoria del producto </li>
+                    <li>file(file) imagenes con extensiones validas (png, jpg, jpeg) </li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/products/:pid (PUT)</h2>
+                <p>endpoint para actualizar un product</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>pid (String) <span class="required">requerido</span>id del producto valido de Mongo</li>
+                    <li>title (String) <span class="required">requerido</span>titulo del producto </li>
+                    <li>description(String) <span class="required">requerido</span> descripcion del producto</li>
+                    <li>code(String) <span class="required">requerido</span>codigo unico del producto </li>
+                    <li>price(number) <span class="required">requerido</span> precio del productp</li>
+                    <li>stock(number) <span class="required">requerido</span> stock del producto</li>
+                    <li>category(String) <span class="required">requerido</span>categoria del producto </li>
+                    <li>file(file) imagenes con extensiones validas (png, jpg, jpeg) </li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/products/:pid (DELETE)</h2>
+                <p>endpoint para eliminar un product</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>pid (String) <span class="required">requerido</span>id del producto valido de Mongo</li>
+                </ul>
+            </div>
+        </details>
+        
+        <details>
+            <summary>CARTS</summary>
+            <div class="endpoint">
+                <h2>/api/auth/carts/:cid (GET)</h2>
+                <p>endpoint para obtenerun carrito</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>cid (String) <span class="required">requerido</span>id del carrito valido de Mongo</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/carts/:cid/product/:pid (POST)</h2>
+                <p>endpoint para agregar un producto al carrito</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>cid (String) <span class="required">requerido</span>id del carrito valido de Mongo</li>
+                    <li>pid (String) <span class="required">requerido</span>id del producto valido de Mongo</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/carts/:cid/product/:pid (DELETE)</h2>
+                <p>endpoint para eliminar productos de un carrito</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>cid (String) <span class="required">requerido</span>id del carrito valido de Mongo</li>
+                    <li>pid (String) <span class="required">requerido</span>id del producto valido de Mongo</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/carts/:cid/product/:pid (PUT)</h2>
+                <p>endpoint para obtener productos</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>cid (String) <span class="required">requerido</span>id del carrito valido de Mongo</li>
+                    <li>pid (String) <span class="required">requerido</span>id del producto valido de Mongo</li>
+                    <li>quantity (String) <span class="required">requerido</span>cantidad del producto</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h2>/api/auth/carts/:cid/purchase (POST)</h2>
+                <p>endpoint para obtener productos</p>
+                <p>parametros:</p>
+                <ul>
+                    <li>cid (String) <span class="required">requerido</span>id del carrito valido de Mongo</li>
+                </ul>
+            </div>
+        </details>
+    </main>
+</body>
+</html>
