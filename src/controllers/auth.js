@@ -1,8 +1,9 @@
 import { response, request } from "express"
 import { CartsRepository, UsersRepository } from "../repositories/index.js"
 import {createHash, isValidPassword} from '../utils/bcryptPassword.js'
+import { genereteToken } from "../utils/jsonWebToken.js"
 
-import {generateToken} from '../utils/jsonWebToken.js'
+
 export const loginUser = async(req=request, res=response) => {
     try {
         const {email, password} = req.body
