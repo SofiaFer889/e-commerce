@@ -23,7 +23,7 @@ router.post('/',[
     check('code','el code es obligatorio').not().isEmpty(),
     check('code').custom(existeCode),
     check('price','el price es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
-    check('stock','el stock es obligatorio y de tipo numerico').not().isEmpty().isNumeric(,
+    check('stock','el stock es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
     check('category','la category es obligatorio').not().isEmpty(),
     validarCampos,
     uploader.single('file')
