@@ -4,16 +4,27 @@ import { uploader } from "../config/multer.js"
 import { isAdmin, validarCampos, validarJWT } from "../middlewere/auth.js"
 import { check } from "express-validator"
 import { existeCode, existeProduct } from "../helpers/db-validaciones.js"
+import logger from "../utils/logger.js"
 
 const router = Router()
-router.get('mockingproducts', mockingProducts)
-router.get('/', validarJWT, getProducts)
+router.get('mockingproducts', (req, res) => {
+    logger.info('Obteniendo productos simulados')
+    mockingProducts(req, res)
+})
+
+router.get('/', validarJWT, (req, res) => {
+    logger.info('Obteniendo todos los productos')
+    getProducts(req, res)
+})
 
 router.get('/:pid', [
     validarJWT,
     check('pid', 'el no es valido el id del producto').isMongoId(),
     validarCampos,
-],getProductById)
+], (req, res) => {
+    logger.info(`Obteniendo producto con ID: ${req.params.pid}`)
+    getProductById(req, res)
+})
 
 router.post('/',[
     validarJWT,
@@ -27,7 +38,10 @@ router.post('/',[
     check('category','la category es obligatorio').not().isEmpty(),
     validarCampos,
     uploader.single('file')
-], addProduct)
+], (req, res) => {
+    logger.info('Añadiendo nuevo producto')
+    addProduct(req, res)
+})
 
 router.put('/:pid',[
     validarJWT,
@@ -36,7 +50,10 @@ router.put('/:pid',[
     check('pid').custom(existeProduct),
     validarCampos,
     uploader.single('file')
-], updateProduct)
+], (req, res) => {
+    logger.info(`Actualizando producto con ID: ${req.params.pid}`)
+    updateProduct(req, res)
+})
 
 router.delete('/:pid', [
     validarJWT,
@@ -44,6 +61,9 @@ router.delete('/:pid', [
     check('pid', 'no es valid el id de producto').isMongoId(),
     check('pid').custom.apply(existeProduct),
     validarCampos,
-],deleteProduct)
+], (req, res) => {
+    logger.info(`Eliminando producto con ID: ${req.params.pid}`)
+    deleteProduct(req, res)
+})
 
 export {router as productsRouter}

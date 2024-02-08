@@ -1,6 +1,7 @@
 import { request, response } from "express"
 import { CartsRepository, ProductsRepository, TicketRepository, UsersRepository } from "../repositories/index.js"
 import { v4 as uuidv4 } from "uuid"
+import logger from '../utils/logger.js'
 
 export const getCartById = async(req=request, res=response) => {
     try {
@@ -13,8 +14,12 @@ export const getCartById = async(req=request, res=response) => {
         if(!(usuario.cart_id.toString() === cid)) return res.status(400).json({ok:false, msg:'carrito no valido'})
 
         const cart = await CartsRepository.getCartById(cid)
+
+        logger.info('el carrito fue obtenodo correctamente')
+
         return res.json({cart})
     } catch (error) {
+        logger.error('error al obtener el carrito',error)
         return response.status(500).json({msg: 'hablar con en administrados'})
     }
 }
@@ -46,8 +51,11 @@ export const addProductInCart = async(req=request, res=response) => {
         if(!cart)
             return res.status(404).json({msg:`el carrito conid ${cid} no existe`})
 
+        logger.info('producto agregado al carrito')
+
         return res.json({msg:'carrito actualizado', cart})
     } catch (error) {
+        logger.error('error al agregar elproducto al carrito',error)
         return response.status(500).json({msg: 'hablar con en administrados'})
     }
 }
@@ -66,8 +74,12 @@ export const deleteProductsInCart= async (req = request, res = response)=>{
         if(!existeProducto) return res.status(400).json({ok:false, msg:'el producto no existe'})
 
         const cart = await CartsRepository.deleteProductsInCart(cid,pid)
+
+        logger.info('producto eliminado')
+
         return res.json({msg:'producto eliminado del carrito', cart})
     } catch (error) {
+        logger.error('error al eliminar el producto al carrito',error)
         return res.status(500).json({msg: 'hablar con el admin'})
         
     }
@@ -94,8 +106,12 @@ export const updateProductsInCart= async (req = request, res = response)=>{
         const cart = await CartsRepository.updateProductsInCart(cid,pid,quantity)
         if(!cart)
            return res.status(404).json({msg:'no se pudo relizar la operacion'})
+
+        logger.info('producto en carrito actualizado')
+           
         return res.json({msg:'producto actualizado', cart})
     } catch (error) {
+        logger.error('error al actualizar el producto',error)
         return res.status(500).json({msg: 'hablar con el admin'})
         
     }
@@ -147,9 +163,11 @@ export const finalizarCompra = async()=> {
 
         await CartsRepository.deleteAllProductsInCart(usuario.cart_ids)
 
+        logger.info('compra generada exitosamente')
+
         return res.json({ok:true, msg:'compra generada', ticket:{items, amount, code, cliente:purchase}})
     } catch (error) {
-        console.log(err)
+        logger.error('error al generar la compra',error)
         return res.status(500).json({msg: 'hablar con el admin'})
     }
 }
