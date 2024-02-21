@@ -3,7 +3,8 @@ import { CartsRepository, UsersRepository } from "../repositories/index.js"
 import {createHash, isValidPassword} from '../utils/bcryptPassword.js'
 import { genereteToken } from "../utils/jsonWebToken.js"
 import logger from '../utils/logger.js'
-
+import { sendEmail } from "../helpers/send-email.js"
+import jwt from "jsonwebtoken"
 
 export const loginUser = async(req=request, res=response) => {
     try {
@@ -41,5 +42,51 @@ export const createUser = async(req=request, res=response) => {
     } catch (error) {
         logger.error('error al crear usuarioa',error)
         return res.status(500).json({ok:false, msg:'contactar con un administrador'})
+    }
+}
+
+export const cambiarPassword = async (req=request, res=response) => {
+    const {email} = req.body
+
+    const usuario = await UsersRepository.getUserEmail(email)
+    if(!usuario) return res.status(400).json({ok:false, msg:'usuario invalido'})
+
+    const token = genereteToken({email}, '1h')
+
+    const urlReset = `${process.env.URL_RESET_PASS}?token=${token}`
+
+    sendEmail(email, urlReset)
+    return res.json({ok:true, msg:'email enviado'})
+}
+
+export const validarTokenPassword = async (req=request, res=response) => {
+    try {
+        const {token} = req.query
+        const {email} = jwt.verify(token, process.env.JWT_SECRET_KEY)
+        return res.json({ok:true, token, email})
+    } catch (error) {
+        logger.error(error)
+        return res.status(401).json({ok:false, msg:'token invalido'})
+    }
+}
+
+export const resetPassword = async (req=request, res=response) => {
+    try {
+        const {token, password} = req.query
+        const {email} = jwt.verify(token, process.env.JWT_SECRET_KEY)
+
+        const usuario = await UsersRepository.getUserEmail(email)
+        if(!usuario) return res.status(400).json({ok:false, msg:'email invalido'})
+
+        const validPassword = isValidPassword(password, usuario.password)
+        if (validPassword) return res.status(400).json({ok:false, msg:'la contraseña debe ser diferente a la anterior'})
+
+        usuario.password = createHash(password)
+        usuario.save()
+
+        return res.json({ok:true, msg:'contraseña cambiada'})
+    } catch (error) {
+        logger.error(error)
+        return res.status(500).json({ok:false, msg:'hablar con un admin'})
     }
 }

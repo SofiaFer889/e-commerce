@@ -35,14 +35,20 @@ export const addProduct = async(req=request, res=response) =>{
     try {
         const {title, description, price, code, stock, category} = req.body
 
+        const {_id}= req
+
+
+        if(!title || !description || !price || !code || !stock || !category) return res.status(400).json({msg:'datos incompletos'})
         if(req.file){
             const isValidExtension = validFileExtension(req.file.originalname)
             if(!isValidExtension)
-              return res.status(404).json({msg:'la extension no es valida'})
+                   return res.status(404).json({msg:'la extension no es valida'})
 
             const {secure_url} = await cloudinary.uploader.upload(req.file.path)
             req.body.thumbnails = secure_url
         }
+
+        req.body.owner = _id
 
         const product = await ProductsRepository.addProduct({...req.body})
 
@@ -90,6 +96,19 @@ export const updateProduct = async(req=request, res=response) =>{
 export const deleteProduct = async(req=request, res=response) =>{
     try {
        const {pid} = req.params
+       const {rol, _id} = req
+       if (rol === 'premium'){
+            const product = await ProductsRepository.getProductById(pid)
+            if(!product) return res.status(400).json({msj:`el producto con id ${pid} no existe`})
+            
+            if (product.owner.toString() === _id){
+                const product = await ProductsRepository.deleteProduct(pid)
+                if(product)
+                    return res.json({msg:'producto elimminido', product})
+                return res.status(404).json({msg: `no se pudo eliminar el producto con id ${pid}`})
+            }
+        }
+
        const product = await ProductsRepository.deleteProduct(pid)
        if(product)
           return res.json({msg:'producto elimminido', product})

@@ -4,7 +4,7 @@ import  jwt  from "jsonwebtoken"
 
 
 export const isAdmin = (req=request, res=response, next)=> {
-    if(req.rol === 'admin')
+    if(req.rol === 'admin' || req.rol === 'premium')
     return res.status(403).json({ok:false, msg: 'permisos insuficientes'})
 
     next()

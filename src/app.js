@@ -6,10 +6,12 @@ import loggerRouter from './routes/logger.js'
 import __dirname from './utils.js'
 import { dbConnection } from "./database/config.js"
 import errorHandler from "./utils/errorHandler.js"
+import cors from 'cors'
+
 
 const app = express()
 const PORT = process.env.PORT
-
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/public'))

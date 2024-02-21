@@ -11,6 +11,11 @@ const productSchema = new Schema({
     stock: {type: Number, required:[true,'el campo es obligatorio']},
     category: {type: String, required:[true,'el campo es obligatorio']},
     thumbnails: {type: String},
+    owner:{
+        type: Schema.Types.ObjectId,
+        ref:'User',
+        required:[true, 'el owner es obligatorio']
+    }
 })
 
 productSchema.set('toJSON', {

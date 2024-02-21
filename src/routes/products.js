@@ -12,10 +12,7 @@ router.get('mockingproducts', (req, res) => {
     mockingProducts(req, res)
 })
 
-router.get('/', validarJWT, (req, res) => {
-    logger.info('Obteniendo todos los productos')
-    getProducts(req, res)
-})
+router.get('/', getProducts)
 
 router.get('/:pid', [
     validarJWT,
@@ -29,14 +26,14 @@ router.get('/:pid', [
 router.post('/',[
     validarJWT,
     isAdmin,
-    check('title','el titulo es obligatorio').not().isEmpty(),
-    check('description','la descripcion es obligatorio').not().isEmpty(),
-    check('code','el code es obligatorio').not().isEmpty(),
-    check('code').custom(existeCode),
-    check('price','el price es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
-    check('stock','el stock es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
-    check('category','la category es obligatorio').not().isEmpty(),
-    validarCampos,
+    //check('title','el titulo es obligatorio').not().isEmpty(),
+    //check('description','la descripcion es obligatorio').not().isEmpty(),
+    //check('code','el code es obligatorio').not().isEmpty(),
+    //check('code').custom(existeCode),
+    //check('price','el price es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
+    //check('stock','el stock es obligatorio y de tipo numerico').not().isEmpty().isNumeric(),
+    //check('category','la category es obligatorio').not().isEmpty(),
+    //validarCampos,
     uploader.single('file')
 ], (req, res) => {
     logger.info('Añadiendo nuevo producto')
