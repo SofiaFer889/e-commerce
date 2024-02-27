@@ -1,0 +1,155 @@
+paths:
+  /api/auth/login:
+    post:
+      summary: Realiza el inicio de sesión de un usuario
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  token:
+                    type: string
+                  usuario:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Datos de inicio de sesión incorrectos
+  /api/auth/register:
+    post:
+      summary: Registra un nuevo usuario
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuario registrado exitosamente
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  usuario:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+        '400':
+          description: Error al registrar el usuario
+  /api/auth/cambiar-password:
+    post:
+      summary: Cambiar la contraseña de un usuario
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: la contraseña se cambio exitosamente
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  msg:
+                    type: string
+        '400':
+          description: Error al cambiar la contraseña
+  /api/auth/reset-password:
+    get:
+      summary: Verifica el token para restablecer la contraseña de un usuario
+      tags:
+        - Authentication
+      parameters:
+        - in: query
+          name: token
+          required: true
+          description: Token de restablecimiento de contraseña
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token válido
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  token:
+                    type: string
+                  email:
+                    type: string
+        '401':
+          description: Token inválido
+  /api/auth/reset-password:
+    post:
+      summary: Restablecer la contraseña de un usuario
+      tags:
+        - Authentication
+      parameters:
+        - in: query
+          name: token
+          required: true
+          description: Token de restablecimiento de contraseña
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Contraseña restablecida exitosamente
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  msg:
+                    type: string
+        '400':
+          description: Error al restablecer la contraseña

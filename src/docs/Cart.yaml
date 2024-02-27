@@ -1,0 +1,160 @@
+paths:
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: id del carrito
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: id de carrito inválido
+        '404':
+          description: Carrito no encontrado
+        '500':
+          description: Error al obtener el carrito
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agregar un producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: id del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto agregado al carrito correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: id del carrito o producto inválido
+        '404':
+          description: Carrito no encontrado o producto no existente
+        '500':
+          description: Error al agregar el producto al carrito
+    delete:
+      summary: Eliminar un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: id del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado del carrito correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: id de carrito o producto inválido
+        '404':
+          description: Carrito no encontrado o producto no existente
+        '500':
+          description: Error al eliminar el producto del carrito
+  /api/carts/{cid}/products/{pid}:
+    put:
+      summary: Actualizar la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: id del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: cantidad actualizada del producto en el carrito
+      responses:
+        '200':
+          description: Producto en el carrito actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: id del carrito o producto inválido o cantidad no válida
+        '404':
+          description: Carrito no encontrado o producto no existente
+        '500':
+          description: Error al actualizar el producto en el carrito
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Finalizar la compra del carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: id del carrito
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Compra generada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  msg:
+                    type: string
+                  ticket:
+                    type: object
+        '400':
+          description: id del carrito inválido o carrito vacío
+        '404':
+          description: Carrito no encontrado
+        '500':
+          description: Error al generar la compra

@@ -1,0 +1,114 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Productos obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto por id
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+    post:
+      summary: Agregar un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Producto agregado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Datos incompletos o inválidos
+        '500':
+          description: Error al agregar el producto
+    put:
+      summary: Actualizar un producto por su id
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: id del producto inválido o producto no encontrado
+        '404':
+          description: Producto no encontrado
+        '500':
+          description: Error al actualizar el producto
+    delete:
+      summary: Eliminar un producto por su id
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: id del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: id del producto inválido o producto no encontrado
+        '404':
+          description: Producto no encontrado
+        '500':
+          description: Error al eliminar el producto
