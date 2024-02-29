@@ -118,7 +118,6 @@ paths:
                     type: string
         '401':
           description: Token inválido
-  /api/auth/reset-password:
     post:
       summary: Restablecer la contraseña de un usuario
       tags:
