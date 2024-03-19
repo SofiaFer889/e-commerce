@@ -13,6 +13,8 @@ const UserSchema = new Schema({
     image: {type: String},
     github: {type: Boolean,default:false},
     cart: {type:Schema.Types.ObjectId, ref:'Cart'},
+    documents: [{ name: String, reference: String }],
+    last_connection: { type: Date },
 })
 
 UserSchema.set('toJSON', {
